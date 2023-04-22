@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <title>Главная</title>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block content %}
+    <br>
+
+    {% if current_user.is_authenticated %}
+        {% if current_user.access_level == ACCESS_LEVELS.user.value %}
+        <p><a class="btn btn-outline-success " href="/upload">Добавить Проект</a></p>
+        <p><h4><font color="green">Ваши проекты</font></h4></p>
+        {% if not table_data %}
+        <p><h6><font color="grey">Здесь будут ваши работы</font></h6></p>
+        {% endif %}
+
+        <table class="table">
+            <thead>
+                <tr class="table-active">
+                    <th>Тема проекта</th>
+                    <th>Идея проекта</th> <!-- TODO Сделать оценки!-->
+                    <th>Проектный продукт</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for project in table_data %}
+            <tr>
+                <td class="table-info">{{project.title}}</td>
+                <td class="table-info">{{project.idea}}</td> <!--TODO !-->
+                <td class="table-info">{{project.presentation}}</td>
+                <td class="table-info">
+                    <div>
+                        <a href="/project_edit/{{ project.id }}" class="btn btn-outline-success"> <!--TODO изменение проектов!-->
+                            Редактировать
+                        </a>
+                        <a href="/project_qr/{{ project.id }}" class="btn btn-outline-primary">
+                            Скачать QR-код
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+            {% for i in table_data %}
+                <table class="table">
+                  <thead>
+                    <tr class="table-active">
+                      <th>Тема проекта</th>
+                      <th>Оценка</th>
+                    </tr>
+                  </thead>
+                    <tbody>
+                    <tr>
+                        <td class="table-info">{{i['title']}}</td>
+                        <td class="table-info">не оценено</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div>
+                    <a href="/rate_project/{{ i['id'] }}" class="btn btn-info">
+                        Оценить
+                    </a>
+                </div>
+            {% endfor %}
+
+        {% endif %}
+
+    {% else %}
+        <h4><font color="green"><p>Авторизируйтесь, чтобы начать</p>
+            <p><i><a href="/login">Войти</a></i></p>
+        </font></h4>
+    {% endif %}
+    {% endblock %}
+</body>
+</html>

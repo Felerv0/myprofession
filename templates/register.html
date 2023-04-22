@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <title>Регистрация</title>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block content %}
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <h1>Регистрация</h1>
+        <p>
+            {{form.login.label}}<br>
+            {{form.login(class="form-control")}}
+            {% for error in form.login.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.name.label}}<br>
+            {{form.name(class="form-control")}}
+            {% for error in form.name.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.surname.label}}<br>
+            {{form.surname(class="form-control")}}
+            {% for error in form.surname.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.patronymic.label}}<br>
+            {{form.patronymic(class="form-control")}}
+            {% for error in form.patronymic.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        {{form.grade.label}}<br>
+        {{form.grade(class="form-select form-select-lg mb-3")}}
+        <p>
+            {{form.password.label}}<br>
+            {{form.password(class="form-control", type="password")}}
+            {% for error in form.password.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.repeat_password.label}}<br>
+            {{form.repeat_password(class="form-control", type="password")}}
+            {% for error in form.login.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{message}}
+    </form>
+    {% endblock %}
+</body>
+</html>
