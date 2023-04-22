@@ -1,3 +1,4 @@
+from consts.strings import DOMAIN
 import qrcode
 
 
@@ -6,7 +7,7 @@ def get_secret_key():
 
 
 def make_qr(src):
-    img = qrcode.make(src)
+    img = qrcode.make(f"{DOMAIN}/project/{src}")
     s = f"static/tmp/{src}.png"
     img.save(s)
     return s

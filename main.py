@@ -42,20 +42,6 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         session = db_session.create_session()
-        # DEBUG
-        # u = users.User(
-        #     login='test',
-        #     name='test',
-        #     surname='test',
-        #     patronymic='test',
-        #     email='test@test.test',
-        #     grade='8A',
-        #     access_level=0
-        # )
-        # u.set_password('1234')
-        # session.add(u)
-        # session.commit()
-        # DEBUG
         user = session.query(users.User).filter(users.User.login == form.login.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
@@ -128,11 +114,27 @@ def project_qr(id):
         return redirect("/")
 
 
+@app.route("/project_delete/<int:id>", methods=["GET", "POST"])
+@login_required
+def project_delete(id):
+    session = db_session.create_session()
+    project = session.query(projects.Project).filter(projects.Project.id == id).first()
+    if project:
+        if project.user_id != current_user.id:
+            return redirect("/")
+        session.delete(project)
+        session.commit()
+    return redirect("/")
+
+
 @app.route("/project_edit/<int:id>", methods=["GET", "POST"])
 @login_required
 def project_edit(id):
     session = db_session.create_session()
     project = session.query(projects.Project).filter(projects.Project.id == id).first()
+    if project:
+        if project.user_id != current_user.id:
+            return redirect("/")
     form = EditProjectForm()
     params = {"project": project}
 
@@ -159,7 +161,6 @@ def project_watch(id):
     params = {"project": project}
     if project:
         return render_template("project.html", **params)
-
 
 
 @login_manager.user_loader
