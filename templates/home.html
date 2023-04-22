@@ -16,12 +16,11 @@
     <br>
 
     {% if current_user.is_authenticated %}
-        {% if current_user.access_level == ACCESS_LEVELS.user.value %}
         <p><a class="btn btn-outline-success " href="/upload">Добавить Проект</a></p>
         <p><h4><font color="green">Ваши проекты</font></h4></p>
         {% if not table_data %}
         <p><h6><font color="grey">Здесь будут ваши работы</font></h6></p>
-        {% endif %}
+        {% else %}
 
         <table class="table">
             <thead>
@@ -53,32 +52,7 @@
             {% endfor %}
             </tbody>
         </table>
-
-        {% else %}
-            {% for i in table_data %}
-                <table class="table">
-                  <thead>
-                    <tr class="table-active">
-                      <th>Тема проекта</th>
-                      <th>Оценка</th>
-                    </tr>
-                  </thead>
-                    <tbody>
-                    <tr>
-                        <td class="table-info">{{i['title']}}</td>
-                        <td class="table-info">не оценено</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div>
-                    <a href="/rate_project/{{ i['id'] }}" class="btn btn-info">
-                        Оценить
-                    </a>
-                </div>
-            {% endfor %}
-
         {% endif %}
-
     {% else %}
         <h4><font color="green"><p>Авторизируйтесь, чтобы начать</p>
             <p><i><a href="/login">Войти</a></i></p>
