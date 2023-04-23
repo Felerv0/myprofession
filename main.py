@@ -171,4 +171,4 @@ def load_user(user_id):
 
 if __name__ == "__main__":
     db_session.global_init("db/database.db")
-    app.run(port=8080, host="127.0.0.1")
+    app.run()
