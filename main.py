@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response, jsonify, send_file
+from flask import Flask, render_template, make_response, jsonify, send_file, Response
 from flask_login import login_user, current_user, login_required, logout_user, LoginManager
 from useful import get_secret_key, make_qr
 from data import db_session, users, projects
@@ -6,9 +6,14 @@ from forms import LoginForm, UploadProjectForm, EditProjectForm, RegisterForm
 
 from werkzeug.utils import redirect, secure_filename
 from werkzeug.exceptions import abort
+from werkzeug.wsgi import FileWrapper
 
 from consts.access_levels import ACCESS_LEVELS
 from consts.grades import GRADES
+from consts.strings import DOMAIN
+
+from io import BytesIO
+import qrcode
 
 app = Flask(__name__)
 
@@ -110,8 +115,14 @@ def upload():
 @app.route("/project_qr/<int:id>", methods=["GET", "POST"])
 def project_qr(id):
     try:
-        s = make_qr(id)
-        return send_file(s, download_name=f"qr-{id}.png", as_attachment=True, mimetype='image/png')
+        img = qrcode.make(f"{DOMAIN}/project/{id}")
+
+        b = BytesIO()
+        img.save(b, "PNG")
+        b.seek(0)
+        response = Response(b.read(), mimetype="image/png", direct_passthrough=True)
+        response.headers.set('Content-Disposition', 'attachment', filename=f"qr-{id}.png")
+        return response
     except Exception as e:
         return redirect("/")
 

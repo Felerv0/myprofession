@@ -1,1 +1,1 @@
-DOMAIN = ""
+DOMAIN = "myprofession.pythonanywhere.com"
