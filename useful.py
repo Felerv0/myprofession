@@ -3,7 +3,10 @@ import qrcode
 
 
 def get_secret_key():
-    return open("consts/key.txt").readlines()[0].rstrip("\n")
+    try:
+        return open("consts/key.txt").readlines()[0].rstrip("\n")
+    except Exception as e:
+        raise ValueError("No secret key file in consts/key.txt")
 
 
 def make_qr(src):
