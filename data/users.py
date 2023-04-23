@@ -2,14 +2,13 @@ import sqlalchemy as sql
 from sqlalchemy import orm
 
 from flask_login import UserMixin
-from sqlalchemy_serializer import SerializerMixin
 
 from data.db_session import SQL_BASE
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
-class User(SQL_BASE, UserMixin, SerializerMixin):
+class User(SQL_BASE, UserMixin):
     __tablename__ = 'users'
 
     id = sql.Column(sql.Integer, primary_key=True, autoincrement=True)

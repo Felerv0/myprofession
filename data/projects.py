@@ -2,10 +2,8 @@ import sqlalchemy as sql
 from data.db_session import SQL_BASE
 from sqlalchemy import orm
 
-from sqlalchemy_serializer import SerializerMixin
 
-
-class Project(SQL_BASE, SerializerMixin):
+class Project(SQL_BASE):
     __tablename__ = "projects"
 
     id = sql.Column(sql.Integer, primary_key=True, autoincrement=True)

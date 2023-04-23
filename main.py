@@ -17,6 +17,8 @@ app.config["SECRET_KEY"] = get_secret_key()
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+db_session.global_init("db/database.db")
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -170,5 +172,4 @@ def load_user(user_id):
 
 
 if __name__ == "__main__":
-    db_session.global_init("db/database.db")
     app.run()
