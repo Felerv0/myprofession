@@ -36,7 +36,7 @@ def main_page():
 
     session = db_session.create_session()
     if current_user.is_authenticated:
-        if current_user.access_level == ACCESS_LEVELS.user.value:
+        if current_user.access_level >= ACCESS_LEVELS.user.value:
             params["table_data"] = []
             for project in session.query(projects.Project).filter(projects.Project.user_id == current_user.id):
                 params["table_data"].append(project)
