@@ -13,6 +13,7 @@
     {% extends "base.html" %}
 
     {% block content %}<br>
+    <h1>Автор: {{user.surname}} {{user.name}} {{user.patronymic}}</h1>
     <h1>Тема: {{project.title}}</h1>
     <h1>Идея: {{project.idea}}</h1>
     <a type="button" class="btn btn-primary btn-lg btn-block" href="{{project.presentation}}">Посмотреть проект</a>
