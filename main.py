@@ -40,7 +40,13 @@ def main_page():
             params["table_data"] = []
             for project in session.query(projects.Project).filter(projects.Project.user_id == current_user.id):
                 params["table_data"].append(project)
-    return render_template("home.html", **params)  # TODO: html
+        if current_user.access_level >= ACCESS_LEVELS.expert.value:
+            params["table_rating"] = []
+            params["table_project_names"] = {}
+            for rating in session.query(ratings.Rating).filter(ratings.Rating.expert_id == current_user.id):
+                params["table_rating"].append(rating)
+                params["table_project_names"][rating.project_id] = session.query(projects.Project).filter(projects.Project.id == rating.project_id).first().title
+    return render_template("home.html", **params)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -54,7 +60,7 @@ def login():
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template("login.html", message="Неверные логин или пароль", form=form,
-                               **params)  # TODO: params
+                               **params)
     return render_template("login.html", title="Авторизация", form=form, **params)
 
 
@@ -70,13 +76,14 @@ def register():
             return render_template("register.html", form=form, message="Пароли не совпадают!")
         if session.query(users.User).filter(users.User.login == form.login.data).first():
             return render_template("register.html", form=form, message="Такой e-mail уже зарегистрирован!")
+        lvl = ACCESS_LEVELS.user.value if form.grade.data[0] != "1" else ACCESS_LEVELS.expert.value
         user = users.User(
             login=form.login.data,
             name=form.name.data,
             surname=form.surname.data,
             patronymic=form.patronymic.data,
             grade=form.grade.data,
-            access_level=ACCESS_LEVELS.user.value
+            access_level=lvl
         )
         user.set_password(form.password.data)
         session.add(user)
@@ -164,7 +171,6 @@ def project_edit(id):
         return render_template("project_edit.html", form=form, **params)
     abort(404)
     return redirect("/")
-    # TODO закончить +html
 
 
 @app.route("/project/<int:id>")
@@ -174,7 +180,10 @@ def project_watch(id):
     if project is None:
         return render_template("project_not_found.html")
     user = session.query(users.User).filter(users.User.id == project.user_id).first()
-    params = {"project": project, "user": user}
+    params = {"project": project, "user": user, "rate_button": False}
+    if current_user.is_authenticated:
+        if current_user.access_level >= ACCESS_LEVELS.expert.value:
+            params["rate_button"] = True
     if project:
         return render_template("project.html", **params)
 
@@ -182,6 +191,8 @@ def project_watch(id):
 @app.route("/project_rate/<int:id>", methods=["GET", "POST"])
 @login_required
 def project_rate(id):
+    if current_user.access_level < ACCESS_LEVELS.expert.value:
+        return redirect("/")
     session = db_session.create_session()
     form = RateProjectForm()
     project = session.query(projects.Project).filter(projects.Project.id == id).first()

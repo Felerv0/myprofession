@@ -16,7 +16,12 @@
     <h1>Автор: {{user.surname}} {{user.name}} {{user.patronymic}}</h1>
     <h1>Тема: {{project.title}}</h1>
     <h1>Идея: {{project.idea}}</h1>
-    <a type="button" class="btn btn-primary btn-lg btn-block" href="{{project.presentation}}">Посмотреть проект</a>
+    <div>
+        <a type="button" class="btn btn-primary btn-lg btn-block" href="{{project.presentation}}">Посмотреть проект</a>
+        {% if rate_button %}
+        <a type="button" class="btn btn-success btn-lg btn-block" href="project_rate/{{project.id}}">Оценить</a>
+        {% endif %}
+    </div>
     {% endblock %}
 </body>
 </html>

@@ -26,7 +26,7 @@
             <thead>
                 <tr class="table-active">
                     <th>Тема проекта</th>
-                    <th>Идея проекта</th> <!-- TODO Сделать оценки!-->
+                    <th>Идея проекта</th>
                     <th>Проектный продукт</th>
                     <th></th>
                 </tr>
@@ -35,11 +35,11 @@
             {% for project in table_data %}
             <tr>
                 <td class="table-info">{{project.title}}</td>
-                <td class="table-info">{{project.idea}}</td> <!--TODO !-->
+                <td class="table-info">{{project.idea}}</td>
                 <td class="table-info">{{project.presentation}}</td>
                 <td class="table-info">
                     <div>
-                        <a style="margin-bottom: 10px" href="/project_edit/{{ project.id }}" class="btn btn-outline-success"> <!--TODO изменение проектов!-->
+                        <a style="margin-bottom: 10px" href="/project_edit/{{ project.id }}" class="btn btn-outline-success">
                             Редактировать
                         </a>
                         <br>
@@ -52,6 +52,46 @@
             {% endfor %}
             </tbody>
         </table>
+        {% endif %}
+        <br><br>
+        {% if current_user.access_level >= ACCESS_LEVELS.expert.value %}
+            <p><h4><font color="green">Ваши экспертные оценки</font></h4></p>
+            {% if not table_rating %}
+            <p><h4><font color="grey">Вы пока не оценили ни одного проекта</font></h4></p>
+            {% else %}
+            <table class="table">
+                <thead>
+                    <tr class="table-active">
+                        <th>Тема проекта</th>
+                        <th>История погружения</th>
+                        <th>Глубина погружения</th>
+                        <th>Итоги погружения</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for rating in table_rating %}
+                <tr>
+                    <td class="table-info">{{table_project_names[rating.project_id]}}</td>
+                    <td class="table-info">{{rating.story}}</td>
+                    <td class="table-info">{{rating.depth}}</td>
+                    <td class="table-info">{{rating.total}}</td>
+                    <td class="table-info">
+                        <div>
+                            <a style="margin-bottom: 10px" href="/project/{{ rating.project_id }}" class="btn btn-outline-success">
+                                Посмотреть проект
+                            </a>
+                            <br>
+                            <a href="/project_rate/{{ rating.project_id }}" class="btn btn-outline-primary">
+                                Изменить оценку
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
         {% endif %}
     {% else %}
         <h4><font color="green"><p>Авторизируйтесь, чтобы начать</p>
