@@ -171,6 +171,8 @@ def project_edit(id):
 def project_watch(id):
     session = db_session.create_session()
     project = session.query(projects.Project).filter(projects.Project.id == id).first()
+    if project is None:
+        return render_template("project_not_found.html")
     user = session.query(users.User).filter(users.User.id == project.user_id).first()
     params = {"project": project, "user": user}
     if project:
