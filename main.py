@@ -1,8 +1,8 @@
 from flask import Flask, render_template, make_response, jsonify, send_file, Response
 from flask_login import login_user, current_user, login_required, logout_user, LoginManager
 from useful import get_secret_key, make_qr
-from data import db_session, users, projects
-from forms import LoginForm, UploadProjectForm, EditProjectForm, RegisterForm
+from data import db_session, users, projects, ratings
+from forms import LoginForm, UploadProjectForm, EditProjectForm, RegisterForm, RateProjectForm
 
 from werkzeug.utils import redirect, secure_filename
 from werkzeug.exceptions import abort
@@ -177,6 +177,39 @@ def project_watch(id):
     params = {"project": project, "user": user}
     if project:
         return render_template("project.html", **params)
+
+
+@app.route("/project_rate/<int:id>", methods=["GET", "POST"])
+@login_required
+def project_rate(id):
+    session = db_session.create_session()
+    form = RateProjectForm()
+    project = session.query(projects.Project).filter(projects.Project.id == id).first()
+    if project is None:
+        return render_template("project_not_found.html")
+    user = session.query(users.User).filter(users.User.id == project.user_id).first()
+    params = {"project_id": id, "project": project, "user": user}
+    if form.validate_on_submit():
+        current_rating = session.query(ratings.Rating).filter(ratings.Rating.project_id == project.id and ratings.Rating.expert_id == current_user.id).first()
+        if current_rating is None:
+            rating = ratings.Rating(
+                project_id=project.id,
+                expert_id=current_user.id,
+                story=form.story.data,
+                depth=form.depth.data,
+                total=form.total.data
+            )
+            session.add(rating)
+            session.commit()
+        else:
+            session.query(ratings.Rating).filter_by(id=current_rating.id).update({
+                ratings.Rating.story: form.story.data,
+                ratings.Rating.depth: form.depth.data,
+                ratings.Rating.total: form.total.data
+            })
+            session.commit()
+        return redirect("/")
+    return render_template("project_rate.html", form=form, **params)
 
 
 @login_manager.user_loader

@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired
-from wtforms import PasswordField, BooleanField, SubmitField, EmailField, StringField, FileField, SelectField
+from wtforms import PasswordField, BooleanField, SubmitField, EmailField, StringField, FileField, SelectField, IntegerRangeField
 from wtforms.validators import DataRequired
 
 from consts.grades import GRADES
@@ -38,3 +38,10 @@ class EditProjectForm(FlaskForm):
     idea = StringField("Идея проекта", validators=[DataRequired()])
     presentation = StringField("Ссылка на презентацию проекта", validators=[DataRequired()])
     submit = SubmitField("Сохранить")
+
+
+class RateProjectForm(FlaskForm):
+    story = IntegerRangeField("История погружения", validators=[DataRequired()])
+    depth = IntegerRangeField("Глубина погружения", validators=[DataRequired()])
+    total = IntegerRangeField("Итоги погружения", validators=[DataRequired()])
+    submit = SubmitField("Оценить")
