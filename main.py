@@ -76,7 +76,7 @@ def register():
             return render_template("register.html", form=form, message="Пароли не совпадают!")
         if session.query(users.User).filter(users.User.login == form.login.data).first():
             return render_template("register.html", form=form, message="Такой e-mail уже зарегистрирован!")
-        lvl = ACCESS_LEVELS.user.value if form.grade.data[0] != "1" else ACCESS_LEVELS.expert.value
+        lvl = ACCESS_LEVELS.expert.value if form.grade.data[0] in ("1", "У") else ACCESS_LEVELS.user.value
         user = users.User(
             login=form.login.data,
             name=form.name.data,

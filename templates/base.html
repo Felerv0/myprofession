@@ -13,7 +13,7 @@
         <a class="navbar-brand" href="/" style="margin-left: 20px"><h1>Моё погружение в профессию</h1></a>
         {% if current_user.is_authenticated %}
             <span class="navbar-text">
-                <h4 style="margin-right: 20px">{{current_user.name}} {{current_user.surname}}, {{current_user.grade}} класс</h4>
+                <h4 style="margin-right: 20px">{{current_user.name}} {{current_user.surname}}, {{current_user.grade}} {% if current_user.grade != "Учитель" %}класс{% endif %}</h4>
                 <p><a class="btn btn-outline-danger " href="/logout"><font color="red">Выйти</font></a></p>
             </span>
         {% else %}
